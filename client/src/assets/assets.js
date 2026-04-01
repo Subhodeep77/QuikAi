@@ -99,8 +99,8 @@ export const dummyCreationData = [
         "type": "blog-title",
         "publish": false,
         "likes": [],
-        "created_at": "2025-07-01T11:09:50.492Z",
-        "updated_at": "2025-07-01T11:09:50.492Z"
+        "created_at": "2026-07-04T11:09:50.492Z",
+        "updated_at": "2026-07-04T11:09:50.492Z"
     },
     {
         "id": 8,
@@ -110,8 +110,8 @@ export const dummyCreationData = [
         "type": "blog-title",
         "publish": false,
         "likes": [],
-        "created_at": "2025-07-01T11:08:10.450Z",
-        "updated_at": "2025-07-01T11:08:10.450Z"
+        "created_at": "2026-07-04T11:08:10.450Z",
+        "updated_at": "2026-07-04T11:08:10.450Z"
     },
     {
         "id": 7,
@@ -121,8 +121,8 @@ export const dummyCreationData = [
         "type": "article",
         "publish": false,
         "likes": [],
-        "created_at": "2025-07-01T11:07:51.312Z",
-        "updated_at": "2025-07-01T11:07:51.312Z"
+        "created_at": "2026-07-04T11:07:51.312Z",
+        "updated_at": "2026-07-04T11:07:51.312Z"
     }
 ]
 
