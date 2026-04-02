@@ -30,7 +30,7 @@ const WriteArticle = () => {
           }
         </div>
         <br />
-        <button className='w-full flex justify-center items-center gap-2 bg-linear-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer'>
+        <button type="submit" className='w-full flex justify-center items-center gap-2 bg-linear-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer'>
           <Edit className='w-5' />
           Generate Article
         </button>

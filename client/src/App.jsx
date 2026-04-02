@@ -10,8 +10,18 @@ import RemoveObject from "./Pages/RemoveObject";
 import ReviewResume from "./Pages/ReviewResume";
 import WriteArticle from "./Pages/WriteArticle";
 import GenerateImages from "./Pages/GenerateImages";
+import { useAuth } from "@clerk/react";
+import { useEffect } from "react";
 
 const App = () => {
+  const {getToken} = useAuth();
+  useEffect(() => {
+    getToken().then((token) => {
+      console.log("JWT Token:", token);
+    }).catch((error) => {
+      console.error("Error getting token:", error);
+    });
+  }, [getToken]);
   return (
     <div>
       <Routes>
