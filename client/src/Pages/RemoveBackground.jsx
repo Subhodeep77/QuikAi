@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Eraser, Sparkles} from 'lucide-react'
 
 const RemoveBackground = () => {
+  // eslint-disable-next-line no-unused-vars
   const [input, setInput] = useState('');
  
   const onSubmitHandler = async (e) => {    
@@ -17,7 +18,7 @@ const RemoveBackground = () => {
         </div>
         <p className='mt-6 text-sm font-medium'>Upload Image</p>
         <input type="file" onChange={(e)=>setInput(e.target.files[0])} accept='image/*' className='w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300 text-gray-600' required />
-        <p className='text-xs text-gray-500 mt-1 font-light'>Supports JPG, PNG, and other image formats</p>
+        <p className='text-xs text-gray-500 mt-1 font-light'>Supports JPG, PNG, and other image formats.</p>
         <button className='w-full flex justify-center items-center gap-2 bg-linear-to-r from-[#F6AB41] to-[#FF4938] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer'>
           <Eraser className='w-5' />
           Remove Background
