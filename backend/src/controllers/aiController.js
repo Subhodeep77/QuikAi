@@ -75,11 +75,12 @@ export const generateBlogTitle = async (req, res) => {
                     content: prompt,
                 },
             ],
-            temperature: 0.7,
-            max_tokens: 100,
+            temperature: 0.6,
+            max_tokens: 300,
         });
 
         const responseText = response.choices[0].message.content;
+        console.log(response.choices[0].message.content);
 
         await Creation.create({
             user_id: userId,
