@@ -1,4 +1,4 @@
-import Creation from '../models/creation'
+import Creation from '../models/creation.js'
 
 export const getUserCreations = async (req, res) => {
     try {

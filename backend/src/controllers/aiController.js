@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import FormData from "form-data";
 import axios from "axios"
 import fs from 'fs';
-import pdf from 'pdf-parse/lib/pdf-parse.js'
+
 
 export const generateArticle = async (req, res) => {
     try {
@@ -234,8 +234,18 @@ export const resumeReview = async (req, res) => {
         const { userId } = req.auth();
         const plan = req.plan;
 
+        if (!resume) {
+            return res.status(400).json({
+                success: false,
+                message: "No file uploaded",
+            });
+        }
+
         if (plan === 'free') {
-            return res.status(403).json({ success: false, message: "This feature is only available to premium users." });
+            return res.status(403).json({
+                success: false,
+                message: "This feature is only available to premium users."
+            });
         }
 
         if (resume.size > 5 * 1024 * 1024) {
@@ -244,21 +254,23 @@ export const resumeReview = async (req, res) => {
                 message: "Resume file size exceeds allowed size (5MB).",
             });
         }
-        const dataBuffer = fs.readFileSync(resume.path)
-        const pdfData = await pdf(dataBuffer)
 
+        const pdf = (await import('pdf-parse')).default;
 
-        const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfData.text}`
+        let dataBuffer;
+        try {
+            dataBuffer = fs.readFileSync(resume.path);
+        } finally {
+            fs.unlinkSync(resume.path);
+        }
 
+        const pdfData = await pdf(dataBuffer);
+
+        const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement.\n\n${pdfData.text}`;
 
         const response = await ai.chat.completions.create({
             model: process.env.OPENAI_MODEL,
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
+            messages: [{ role: "user", content: prompt }],
             temperature: 0.7,
             max_tokens: 1000,
         });
@@ -279,6 +291,8 @@ export const resumeReview = async (req, res) => {
 
     } catch (error) {
         console.error("Error generating review of resume:", error);
-        return res.status(500).json({ message: "Failed to analyse resume" });
+        return res.status(500).json({
+            message: "Failed to analyse resume"
+        });
     }
 };

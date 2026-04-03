@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import { clerkMiddleware, requireAuth } from '@clerk/express'
 import aiRouter from './routes/airoutes.js';
 import connectCloudinary from './config/cloudinary.js';
+import userRouter from './routes/userRoutes.js';
 
 await connectDB();
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.use(requireAuth());
 
 app.use('/api/ai', aiRouter);
+app.use('/api/user', userRouter);
 
 const PORT = process.env.PORT || 3000;
 
