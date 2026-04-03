@@ -4,6 +4,8 @@ import Creation from "../models/creation.js";
 import { v2 as cloudinary } from 'cloudinary';
 import FormData from "form-data";
 import axios from "axios"
+import fs from 'fs';
+import pdf from 'pdf-parse/lib/pdf-parse.js'
 
 export const generateArticle = async (req, res) => {
     try {
@@ -44,11 +46,14 @@ export const generateArticle = async (req, res) => {
             });
         }
 
-        res.json({ success: true, article: responseText });
+        return res.status(200).json({
+            success: true,
+            article: responseText
+        });
 
     } catch (error) {
         console.error("Error generating article:", error);
-        res.status(500).json({ message: "Failed to generate article" });
+        return res.status(500).json({ message: "Failed to generate article" });
     }
 };
 
@@ -91,11 +96,14 @@ export const generateBlogTitle = async (req, res) => {
             });
         }
 
-        res.json({ success: true, blog_title: responseText });
+        return res.status(200).json({
+            success: true,
+            blog_title: responseText
+        });
 
     } catch (error) {
         console.error("Error generating blog title:", error);
-        res.status(500).json({ message: "Failed to generate blog title" });
+        return res.status(500).json({ message: "Failed to generate blog title" });
     }
 };
 
@@ -133,10 +141,144 @@ export const generateImage = async (req, res) => {
             publish,
         });
 
-        res.json({ success: true, content: secure_url });
+        return res.status(200).json({
+            success: true,
+            content: secure_url
+        });
 
     } catch (error) {
         console.error("Error generating image:", error);
-        res.status(500).json({ message: "Failed to generate image" });
+        return res.status(500).json({ message: "Failed to generate image" });
+    }
+};
+
+export const removeImageBackground = async (req, res) => {
+    try {
+        const { image } = req.file;
+        const { userId } = req.auth();
+        const plan = req.plan;
+
+        if (plan === 'free') {
+            return res.status(403).json({ success: false, message: "This feature is only available to premium users." });
+        }
+
+
+        const { secure_url } = await cloudinary.uploader.upload(image.path, {
+            transformation: [
+                {
+                    effect: 'background_removal',
+                    background_removal: 'remove_the_background'
+                }
+            ]
+        });
+        await Creation.create({
+            user_id: userId,
+            prompt: 'Remove background from image',
+            content: secure_url,
+            type: "image",
+        });
+
+        return res.status(200).json({
+            success: true,
+            content: secure_url
+        });
+
+    } catch (error) {
+        console.error("Error removing background of image:", error);
+        return res.status(500).json({ message: "Failed to remove background of image" });
+    }
+};
+
+export const removeImageObject = async (req, res) => {
+    try {
+        const { image } = req.file;
+        const { object } = req.body;
+        const { userId } = req.auth();
+        const plan = req.plan;
+
+        if (plan === 'free') {
+            return res.status(403).json({ success: false, message: "This feature is only available to premium users." });
+        }
+
+
+        const { public_id } = await cloudinary.uploader.upload(image.path);
+        const imageUrl = cloudinary.url(public_id, {
+            transformation: [
+                {
+                    effect: `gen_remove:${object}`
+                }
+            ],
+            resource_type: 'image'
+        })
+        await Creation.create({
+            user_id: userId,
+            prompt: `Remove ${object} from image`,
+            content: imageUrl,
+            type: "image",
+        });
+
+        return res.status(200).json({
+            success: true,
+            content: imageUrl
+        });
+
+    } catch (error) {
+        console.error("Error removing object from image:", error);
+        return res.status(500).json({ message: "Failed to remove object from image" });
+    }
+};
+
+export const resumeReview = async (req, res) => {
+    try {
+        const resume = req.file;
+        const { userId } = req.auth();
+        const plan = req.plan;
+
+        if (plan === 'free') {
+            return res.status(403).json({ success: false, message: "This feature is only available to premium users." });
+        }
+
+        if (resume.size > 5 * 1024 * 1024) {
+            return res.status(413).json({
+                success: false,
+                message: "Resume file size exceeds allowed size (5MB).",
+            });
+        }
+        const dataBuffer = fs.readFileSync(resume.path)
+        const pdfData = await pdf(dataBuffer)
+
+
+        const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfData.text}`
+
+
+        const response = await ai.chat.completions.create({
+            model: process.env.OPENAI_MODEL,
+            messages: [
+                {
+                    role: "user",
+                    content: prompt,
+                },
+            ],
+            temperature: 0.7,
+            max_tokens: 1000,
+        });
+
+        const responseText = response.choices[0].message.content;
+
+        await Creation.create({
+            user_id: userId,
+            prompt,
+            content: responseText,
+            type: "resume-review",
+        });
+
+        return res.status(200).json({
+            success: true,
+            content: responseText
+        });
+
+    } catch (error) {
+        console.error("Error generating review of resume:", error);
+        return res.status(500).json({ message: "Failed to analyse resume" });
     }
 };

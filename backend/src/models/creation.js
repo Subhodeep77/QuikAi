@@ -22,7 +22,7 @@ const creationSchema = new mongoose.Schema(
         type: {
             type: String,
             required: true,
-            enum: ["text", "image", "code", "other", "article","blog-title"],
+            enum: ["resume-review", "image", "article","blog-title"],
         },
 
         publish: {
