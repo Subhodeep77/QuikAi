@@ -5,6 +5,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import FormData from "form-data";
 import axios from "axios"
 import fs from 'fs';
+import { parsePDF } from "../utils/parsePdf.js";
 
 
 export const generateArticle = async (req, res) => {
@@ -230,70 +231,103 @@ export const removeImageObject = async (req, res) => {
 };
 
 export const resumeReview = async (req, res) => {
-    try {
-        const resume = req.file;
-        const { userId } = req.auth();
-        const plan = req.plan;
+  try {
+    const resume = req.file;
+    const { userId } = req.auth();
+    const plan = req.plan;
 
-        if (!resume) {
-            return res.status(400).json({
-                success: false,
-                message: "No file uploaded",
-            });
-        }
 
-        if (plan === 'free') {
-            return res.status(403).json({
-                success: false,
-                message: "This feature is only available to premium users."
-            });
-        }
-
-        if (resume.size > 5 * 1024 * 1024) {
-            return res.status(413).json({
-                success: false,
-                message: "Resume file size exceeds allowed size (5MB).",
-            });
-        }
-
-        const pdf = (await import('pdf-parse')).default;
-
-        let dataBuffer;
-        try {
-            dataBuffer = fs.readFileSync(resume.path);
-        } finally {
-            fs.unlinkSync(resume.path);
-        }
-
-        const pdfData = await pdf(dataBuffer);
-
-        const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement.\n\n${pdfData.text}`;
-
-        const response = await ai.chat.completions.create({
-            model: process.env.OPENAI_MODEL,
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-            max_tokens: 1000,
-        });
-
-        const responseText = response.choices[0].message.content;
-
-        await Creation.create({
-            user_id: userId,
-            prompt,
-            content: responseText,
-            type: "resume-review",
-        });
-
-        return res.status(200).json({
-            success: true,
-            content: responseText
-        });
-
-    } catch (error) {
-        console.error("Error generating review of resume:", error);
-        return res.status(500).json({
-            message: "Failed to analyse resume"
-        });
+    // ✅ Validation
+    if (!resume) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
     }
+
+    if (plan === "free") {
+      return res.status(403).json({
+        success: false,
+        message: "This feature is only available to premium users.",
+      });
+    }
+
+    if (resume.size > 5 * 1024 * 1024) {
+      return res.status(413).json({
+        success: false,
+        message: "Resume file size exceeds allowed size (5MB).",
+      });
+    }
+
+    // ✅ Read file
+    const dataBuffer = fs.readFileSync(resume.path);
+
+    // ✅ Parse PDF
+    const text = await parsePDF(dataBuffer.buffer);
+
+    // ✅ Delete file AFTER parsing
+    if (fs.existsSync(resume.path)) {
+      fs.unlinkSync(resume.path);
+    }
+
+    // ✅ Validate extracted text
+    if (!text || text.trim().length < 20) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or empty PDF content",
+      });
+    }
+
+    // ✅ Improve prompt (VERY IMPORTANT for quality)
+    const prompt = `
+You are a professional resume reviewer.
+
+Analyze the resume below and provide structured feedback:
+
+1. Strengths
+2. Weaknesses
+3. Suggestions for improvement
+
+Be clear, concise, and actionable.
+
+Resume:
+${text}
+`;
+
+    // ✅ AI call
+    const response = await ai.chat.completions.create({
+      model: process.env.OPENAI_MODEL,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.6,
+      max_tokens: 3000,
+    });
+
+    const responseText = response.choices[0].message.content;
+
+    // ✅ Save to DB
+    await Creation.create({
+      user_id: userId,
+      prompt,
+      content: responseText,
+      type: "resume-review",
+    });
+
+    return res.status(200).json({
+      success: true,
+      content: responseText,
+    });
+
+  } catch (error) {
+    console.error("FULL ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to analyse resume",
+    });
+  }
 };
