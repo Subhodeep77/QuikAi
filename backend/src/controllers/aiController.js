@@ -26,7 +26,7 @@ export const generateArticle = async (req, res) => {
                 },
             ],
             temperature: 0.7,
-            max_tokens: length || 500,
+            max_tokens: Math.min(length * 2, 4000),
         });
 
         const responseText = response.choices[0].message.content;
@@ -48,7 +48,7 @@ export const generateArticle = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            article: responseText
+            content: responseText
         });
 
     } catch (error) {
@@ -98,7 +98,7 @@ export const generateBlogTitle = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            blog_title: responseText
+            content: responseText
         });
 
     } catch (error) {
