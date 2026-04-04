@@ -91,6 +91,7 @@ It delivers a seamless user experience with a **scalable architecture**, **secur
 ---
 
 ## 📁 Project Structure
+```
 QuikAI/
 │
 ├── client/ # Frontend (React + Vite)
@@ -110,6 +111,7 @@ QuikAI/
 │ └── utils/ # Helpers (PDF parsing, AI)
 │
 └── README.md
+```
 
 ---
 
@@ -120,15 +122,33 @@ QuikAI/
 ```bash
 git clone https://github.com/your-username/quikai.git
 cd quikai
-2️⃣ Install Dependencies
-🔹 Frontend
+```
+
+---
+
+### 2️⃣ Install Dependencies
+
+#### 🔹 Frontend
+
+```bash
 cd client
 npm install
-🔹 Backend
+```
+
+#### 🔹 Backend
+
+```bash
 cd backend
 npm install
-🔐 Environment Variables
-📌 Backend .env
+```
+
+---
+
+## 🔐 Environment Variables
+
+### 📌 Backend `.env`
+
+```env
 PORT=5000
 MONGO_URI=your_mongodb_connection
 
@@ -140,68 +160,134 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
 AI_API_KEY=your_ai_api_key
-📌 Frontend .env
+```
+
+---
+
+### 📌 Frontend `.env`
+
+```env
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key
 VITE_BACKEND_URL=http://localhost:5000
-▶️ Running the Project
-🚀 Start Backend Server
+```
+
+---
+
+## ▶️ Running the Project
+
+### 🚀 Start Backend Server
+
+```bash
 cd backend
 npm run dev
-💻 Start Frontend
+```
+
+### 💻 Start Frontend
+
+```bash
 cd client
 npm run dev
-🔌 API Endpoints
-🧠 AI Routes
-Method	Endpoint	Description
-POST	/api/ai/generate-title	Generate blog titles
-POST	/api/ai/generate-article	Generate articles
-POST	/api/ai/generate-image	AI image creation
-POST	/api/ai/remove-bg	Remove background
-POST	/api/ai/remove-object	Remove objects
-📄 Resume Routes
-Method	Endpoint	Description
-POST	/api/resume/upload	Upload & analyze resume
-❤️ Like System
-Method	Endpoint	Description
-POST	/api/content/like	Like content
-POST	/api/content/unlike	Unlike content
-🔐 Important Functionality
-✅ Like/Unlike system with persistent storage
-🔐 Secure APIs using Clerk JWT middleware
-📂 Efficient file upload handling via Multer
-🤖 AI API abstraction (Gemini/OpenAI interchangeable)
-🚀 Deployment
-🌐 Frontend
-Vercel
-⚙️ Backend
-Render / Railway
-🗄️ Database
-MongoDB Atlas
-📊 Performance & Scalability
-⚡ Modular architecture for maintainability
-🔄 Stateless REST APIs
-📈 Scalable MongoDB schema design
-🌍 CDN-based media delivery (Cloudinary)
-🚀 Optimized frontend with Vite
-🤝 Contributing
+```
+
+---
+
+## 🔌 API Endpoints
+
+### 🧠 AI Routes (`/api/ai`)
+
+| Method | Endpoint                              | Description                          |
+|--------|--------------------------------------|--------------------------------------|
+| POST   | `/api/ai/generate-article`           | Generate AI article                  |
+| POST   | `/api/ai/generate-blog-title`        | Generate blog titles                 |
+| POST   | `/api/ai/generate-image`             | Generate AI image                    |
+| POST   | `/api/ai/remove-image-background`    | Remove image background              |
+| POST   | `/api/ai/remove-image-object`        | Remove objects from image            |
+| POST   | `/api/ai/resume-review`              | Upload & analyze resume (PDF)        |
+
+> ⚠️ **Note:**  
+> - Protected via Clerk JWT (`auth` middleware)  
+> - File uploads handled using `multer` (`image` / `resume` fields)
+
+---
+
+### 👤 User Routes (`/api/user`)
+
+| Method | Endpoint                              | Description                          |
+|--------|--------------------------------------|--------------------------------------|
+| GET    | `/api/user/get-user-creations`       | Fetch user's creations               |
+| GET    | `/api/user/get-published-creations`  | Fetch all published creations        |
+| POST   | `/api/user/toggle-like-creation`     | Like / Unlike a creation             |
+
+---
+
+## 🔐 Important Notes on API Behavior
+
+- 🔐 All routes are protected using **Clerk authentication middleware**
+- 📂 File uploads:
+  - `image` → for image editing routes
+  - `resume` → for resume review
+- ❤️ Like system uses a **toggle pattern** (single endpoint for like/unlike)
+
+---
+
+
+## 🔐 Important Functionality
+
+- ✅ Like/Unlike system with persistent storage  
+- 🔐 Secure APIs using Clerk JWT middleware  
+- 📂 Efficient file upload handling via Multer  
+- 🤖 AI API abstraction (Gemini/OpenAI interchangeable)  
+
+---
+
+## 🚀 Deployment
+
+| Layer      | Platform           |
+|------------|-------------------|
+| Frontend   | Vercel            |
+| Backend    | Render / Railway  |
+| Database   | MongoDB Atlas     |
+
+---
+
+## 📊 Performance & Scalability
+
+- ⚡ Modular architecture for maintainability  
+- 🔄 Stateless REST APIs  
+- 📈 Scalable MongoDB schema design  
+- 🌍 CDN-based media delivery (Cloudinary)  
+- 🚀 Optimized frontend with Vite  
+
+---
+
+## 🤝 Contributing
 
 Contributions are welcome.
 
-Steps:
-Fork the repository
-Create a new branch (feature/your-feature)
-Commit your changes
-Push to your fork
-Open a Pull Request
-📜 License
+### Steps:
+
+1. Fork the repository  
+2. Create a new branch (`feature/your-feature`)  
+3. Commit your changes  
+4. Push to your fork  
+5. Open a Pull Request  
+
+---
+
+## 📜 License
 
 This project is licensed under the MIT License.
 
-👨‍💻 Author
+---
 
-Subhodeep
+## 👨‍💻 Author
 
-GitHub: https://github.com/Subhodeep77
-⭐ Final Note
+**Subhodeep**
 
-QuikAI represents a production-grade AI SaaS architecture, combining scalable backend services with intelligent AI capabilities. It serves as a strong foundation for building advanced AI-driven applications.
+- GitHub: https://github.com/Subhodeep77  
+
+---
+
+## ⭐ Final Note
+
+QuikAI represents a **production-grade AI SaaS architecture**, combining scalable backend services with intelligent AI capabilities. It serves as a strong foundation for building advanced AI-driven applications.
