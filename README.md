@@ -283,7 +283,7 @@ This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
-**Subhodeep**
+**Subhodeep Paramanik**
 
 - GitHub: https://github.com/Subhodeep77  
 
