@@ -4,7 +4,7 @@
 ![Frontend](https://img.shields.io/badge/frontend-React-blue)
 ![Backend](https://img.shields.io/badge/backend-Node.js-brightgreen)
 ![Database](https://img.shields.io/badge/database-MongoDB-green)
-![AI](https://img.shields.io/badge/AI-Gemini%20%7C%20OpenAI-purple)
+![AI](https://img.shields.io/badge/AI-Gemini%20%7C%20Clipdrop-purple)
 
 ---
 
@@ -87,7 +87,7 @@ It delivers a seamless user experience with a **scalable architecture**, **secur
 ### 🔹 AI Integration
 - Gemini API
 - OpenAI API (compatible architecture)
-
+- Clipdrop API 
 ---
 
 ## 📁 Project Structure
@@ -98,8 +98,8 @@ QuikAI/
 │ ├── src/
 │ │ ├── components/
 │ │ ├── pages/
-│ │ ├── hooks/
-│ │ └── utils/
+│ │ └── assets/
+│ │ 
 │ └── public/
 │
 ├── backend/ # Backend (Node + Express)
@@ -159,7 +159,8 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-AI_API_KEY=your_ai_api_key
+GEMINIAI_API_KEY=your_ai_api_key
+CLIPDROP_API_KEY=your_ai_api_key
 ```
 
 ---
@@ -236,7 +237,7 @@ npm run dev
 - ✅ Like/Unlike system with persistent storage  
 - 🔐 Secure APIs using Clerk JWT middleware  
 - 📂 Efficient file upload handling via Multer  
-- 🤖 AI API abstraction (Gemini/OpenAI interchangeable)  
+- 🤖 AI API abstraction (Gemini/OpenAI interchangeable & Clipdrop)  
 
 ---
 
