@@ -38,7 +38,7 @@ Generate EXACTLY 5 high-quality blog titles for the keyword "${input}" in the "$
 STRICT RULES:
 - Output ONLY 5 titles (no more, no less)
 - Each title must be complete and meaningful (not short like "Smart")
-- Each title must be at least 6–10 words long
+- Each title must be at least 6-10 words long
 - Use engaging and click-worthy language
 - Use a numbered list (1 to 5)
 - Do NOT add explanations or extra text

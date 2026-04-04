@@ -6,7 +6,7 @@ const CreationItem = ({ item }) => {
   const [downloading, setDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // 🔽 Download handler
+  
   const handleDownload = async (e, url) => {
     e.stopPropagation();
 
@@ -33,7 +33,7 @@ const CreationItem = ({ item }) => {
     }
   };
 
-  // 📋 Copy handler
+  
   const handleCopy = async (e) => {
     e.stopPropagation();
 
@@ -52,7 +52,7 @@ const CreationItem = ({ item }) => {
       onClick={() => setExpanded(!expanded)}
       className="p-4 max-w-5xl text-sm bg-white border border-gray-200 rounded-lg cursor-pointer"
     >
-      {/* Header */}
+      
       <div className="flex justify-between items-center gap-4">
         <div>
           <h2>{item.prompt}</h2>
@@ -62,12 +62,12 @@ const CreationItem = ({ item }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Type badge */}
+          
           <button className="bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] py-1 px-4 rounded-full">
             {item.type}
           </button>
 
-          {/* 📥 Download (only for images) */}
+          
           {item.type === "image" && (
             <button
               onClick={(e) => handleDownload(e, item.content)}
@@ -82,7 +82,7 @@ const CreationItem = ({ item }) => {
             </button>
           )}
 
-          {/* 📋 Copy (only for non-images) */}
+          
           {item.type !== "image" && (
             <button
               onClick={handleCopy}
