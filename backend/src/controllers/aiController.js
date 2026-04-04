@@ -236,8 +236,6 @@ export const resumeReview = async (req, res) => {
     const { userId } = req.auth();
     const plan = req.plan;
 
-
-    // ✅ Validation
     if (!resume) {
       return res.status(400).json({
         success: false,
@@ -259,18 +257,14 @@ export const resumeReview = async (req, res) => {
       });
     }
 
-    // ✅ Read file
     const dataBuffer = fs.readFileSync(resume.path);
 
-    // ✅ Parse PDF
     const text = await parsePDF(dataBuffer.buffer);
 
-    // ✅ Delete file AFTER parsing
     if (fs.existsSync(resume.path)) {
       fs.unlinkSync(resume.path);
     }
 
-    // ✅ Validate extracted text
     if (!text || text.trim().length < 20) {
       return res.status(400).json({
         success: false,
@@ -278,7 +272,6 @@ export const resumeReview = async (req, res) => {
       });
     }
 
-    // ✅ Improve prompt (VERY IMPORTANT for quality)
     const prompt = `
 You are a professional resume reviewer.
 
@@ -294,7 +287,6 @@ Resume:
 ${text}
 `;
 
-    // ✅ AI call
     const response = await ai.chat.completions.create({
       model: process.env.OPENAI_MODEL,
       messages: [
@@ -309,7 +301,6 @@ ${text}
 
     const responseText = response.choices[0].message.content;
 
-    // ✅ Save to DB
     await Creation.create({
       user_id: userId,
       prompt,
